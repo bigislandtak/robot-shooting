@@ -21,14 +21,11 @@
 #include "globals.h"
 #include "Arena.h"
 
-class streambuf_switcher
-{
+class streambuf_switcher {
 public:
     streambuf_switcher(ios& dest, ios& src)
-    : dest_stream(dest), saved_streambuf(dest.rdbuf(src.rdbuf()))
-    {}
-    ~streambuf_switcher()
-    {
+    : dest_stream(dest), saved_streambuf(dest.rdbuf(src.rdbuf())) {}
+    ~streambuf_switcher() {
         dest_stream.rdbuf(saved_streambuf);
     }
 private:
@@ -39,11 +36,9 @@ private:
 set<void*> addrs;
 bool recordaddrs = false;
 
-void* operator new(size_t n)
-{
+void* operator new(size_t n) {
     void* p = malloc(n);
-    if (recordaddrs  &&  (n == sizeof(Robot)  ||  n == sizeof(Player)))
-    {
+    if (recordaddrs  &&  (n == sizeof(Robot)  ||  n == sizeof(Player))) {
         recordaddrs = false;
         addrs.insert(p);
         recordaddrs = true;
@@ -51,104 +46,93 @@ void* operator new(size_t n)
     return p;
 }
 
-void operator delete(void* p) noexcept
-{
-    if (recordaddrs)
-    {
+void operator delete(void* p) noexcept {
+    if (recordaddrs) {
         recordaddrs = false;
         set<void*>::iterator it = addrs.find(p);
         if (it != addrs.end())
             addrs.erase(it);
-            recordaddrs = true;
-            }
+        recordaddrs = true;
+    }
     free(p);
 }
 
 int randReturn = -1;
 
-void testone(int n)
-{
+void testone(int n) {
     streambuf_switcher sso(cout, cerr);
-    
-    switch (n)
-    {
+    switch (n) {
         default: {
             cout << "Bad argument" << endl;
-        } break; case  1: {
+        } break;
+        case  1: {
             Arena a(15, 18);
             a.addPlayer(2, 2);
             Robot r(&a, 5, 17);
             assert(r.row() == 5  &&  r.col() == 17);
-        } break; case  2: {
+        } break; 
+        case  2: {
             Arena a(20, 40);
             a.addPlayer(1, 1);
             Robot r(&a, 12, 22);
-            for (int k = 0; k < 8; k++)
-            {
+            for (int k = 0; k < 8; k++) {
                 int oldr = r.row();
                 int oldc = r.col();
                 r.move();
-                assert((r.row() == oldr  &&  abs(r.col() - oldc) == 1)  ||
-                       (r.col() == oldc  &&  abs(r.row() - oldr) == 1));
+                assert((r.row() == oldr  &&  abs(r.col() - oldc) == 1)  || (r.col() == oldc  &&  abs(r.row() - oldr) == 1));
             }
-        } break; case  3: {
+        } break;
+        case  3: {
             bool moved = false;
-            for (int k = 0; k < 50; k++)
-            {
+            for (int k = 0; k < 50; k++) {
                 Arena a(1, 40);
                 a.addPlayer(1, 1);
                 Robot r(&a, 1, 40);
-                for (int m = 0; m < 20  &&  r.col() > 1; m++)
-                {
+                for (int m = 0; m < 20  &&  r.col() > 1; m++) {
                     int oldc = r.col();
                     r.move();
-                    assert(r.row() == 1  &&  r.col() <= 40  &&
-                           abs(r.col() - oldc) <= 1);
+                    assert(r.row() == 1  &&  r.col() <= 40  && abs(r.col() - oldc) <= 1);
                     if (r.col() != oldc)
                         moved = true;
                 }
             }
             assert(moved);
-        } break; case  4: {
+        } break; 
+        case  4: {
             bool moved = false;
-            for (int k = 0; k < 50; k++)
-            {
+            for (int k = 0; k < 50; k++) {
                 Arena a(20, 1);
                 a.addPlayer(1, 1);
                 Robot r(&a, 20, 1);
-                for (int m = 0; m < 20  &&  r.row() > 1; m++)
-                {
+                for (int m = 0; m < 20  &&  r.row() > 1; m++) {
                     int oldr = r.row();
                     r.move();
-                    assert(r.col() == 1  &&  r.row() <= 20  &&
-                           abs(r.row() - oldr) <= 1);
+                    assert(r.col() == 1  &&  r.row() <= 20  && abs(r.row() - oldr) <= 1);
                     if (r.row() != oldr)
                         moved = true;
                 }
             }
             assert(moved);
-        } break; case  5: {
+        } break;
+        case  5: {
             bool moved = false;
-            for (int k = 0; k < 50; k++)
-            {
+            for (int k = 0; k < 50; k++) {
                 Arena a(1, 40);
                 a.addPlayer(1, 40);
                 Robot r(&a, 1, 1);
-                for (int m = 0; m < 20  &&  r.col() < 40; m++)
-                {
+                for (int m = 0; m < 20  &&  r.col() < 40; m++) {
                     int oldc = r.col();
                     r.move();
-                    assert(r.row() == 1  &&  r.col() >= 1  &&
-                           abs(r.col() - oldc) <= 1);
+                    assert(r.row() == 1  &&  r.col() >= 1  && abs(r.col() - oldc) <= 1);
                     if (r.col() != oldc)
                         moved = true;
                 }
             }
             assert(moved);
-        } break; case  6: {
+        } break;
+        case  6: {
             bool moved = false;
-            for (int k = 0; k < 50; k++)
-            {
+            for (int k = 0; k < 50; k++) {
                 Arena a(20, 1);
                 a.addPlayer(20, 1);
                 Robot r(&a, 1, 1);
@@ -156,30 +140,33 @@ void testone(int n)
                 {
                     int oldr = r.row();
                     r.move();
-                    assert(r.col() == 1  &&  r.row() >= 1  &&
-                           abs(r.row() - oldr) <= 1);
+                    assert(r.col() == 1  &&  r.row() >= 1  && abs(r.row() - oldr) <= 1);
                     if (r.row() != oldr)
                         moved = true;
                 }
             }
             assert(moved);
-        } break; case  7: {
+        } break;
+        case  7: {
             Arena a(10, 20);
             a.addPlayer(1, 1);
             Robot r(&a, 5, 7);
             assert(r.takeDamageAndLive());
             assert(!r.takeDamageAndLive());
-        } break; case  8: {
+        } break;
+        case  8: {
             Arena a(10, 20);
             Player p(&a, 2, 3);
             assert(p.row() == 2  &&  p.col() == 3);
-        } break; case  9: {
+        } break;
+        case  9: {
             Arena a(10, 20);
             Player p(&a, 2, 3);
             assert(!p.isDead());
             p.setDead();
             assert(p.isDead());
-        } break; case 10: {
+        } break;
+        case 10: {
             Arena a(10, 20);
             a.addPlayer(8, 12);
             Player* p = a.player();
@@ -191,7 +178,8 @@ void testone(int n)
             assert(p->row() == 8  &&  p->col() == 11);
             p->move(RIGHT);
             assert(p->row() == 8  &&  p->col() == 12);
-        } break; case 11: {
+        } break;
+        case 11: {
             Arena a(15, 18);
             a.addPlayer(1, 1);
             Player* p = a.player();
@@ -199,7 +187,8 @@ void testone(int n)
             assert(p->row() == 1  &&  p->col() == 1  &&  !p->isDead());
             p->move(UP);
             assert(p->row() == 1  &&  p->col() == 1  &&  !p->isDead());
-        } break; case 12: {
+        } break;
+        case 12: {
             Arena a(15, 18);
             a.addPlayer(15, 18);
             Player* p = a.player();
@@ -207,22 +196,26 @@ void testone(int n)
             assert(p->row() == 15  &&  p->col() == 18  &&  !p->isDead());
             p->move(DOWN);
             assert(p->row() == 15  &&  p->col() == 18  &&  !p->isDead());
-        } break; case 13: {
+        } break;
+        case 13: {
             Arena a(19, 37);
             assert(a.rows() == 19  &&  a.cols() == 37);
-        } break; case 14: {
+        } break;
+        case 14: {
             Arena a(10, 20);
             a.addPlayer(3, 6);
             a.addRobot(7, 5);
             assert(a.nRobotsAt(7, 5) == 1  &&  a.nRobotsAt(7, 6) == 0);
-        } break; case 15: {
+        } break;
+        case 15: {
             Arena a(10, 20);
             a.addPlayer(3, 6);
             a.addRobot(7, 5);
             a.addRobot(4, 7);
             a.addRobot(7, 5);
             assert(a.nRobotsAt(7, 5) == 2  &&  a.robotCount() == 3);
-        } break; case 16: {
+        } break;
+        case 16: {
             Arena a(10, 20);
             a.addPlayer(3, 6);
             a.addRobot(3, 4);
@@ -230,7 +223,8 @@ void testone(int n)
             a.damageRobotAt(3, 5);
             a.damageRobotAt(3, 5);
             assert(a.nRobotsAt(3, 4) == 1  &&  a.nRobotsAt(3, 5) == 0);
-        } break; case 17: {
+        } break;
+        case 17: {
             Arena a(10, 20);
             a.addPlayer(3, 6);
             a.addRobot(3, 4);
@@ -246,7 +240,8 @@ void testone(int n)
             a.damageRobotAt(3, 8);
             assert(a.nRobotsAt(3, 8) == 0  &&  a.robotCount() == oldCount-1);
             assert(a.nRobotsAt(3, 4) == 1);
-        } break; case 18: {
+        } break;
+        case 18: {
             Arena a(10, 20);
             a.addPlayer(3, 6);
             a.addRobot(3, 4);
@@ -257,13 +252,13 @@ void testone(int n)
             a.damageRobotAt(3, 5);
             assert(a.nRobotsAt(3, 5) == 2  &&  a.robotCount() == oldCount);
             a.damageRobotAt(3, 5);
-            assert((a.nRobotsAt(3, 5) == 1  &&  a.robotCount() == oldCount-1)  ||
-                   (a.nRobotsAt(3, 5) == 2  &&  a.robotCount() == oldCount));
+            assert((a.nRobotsAt(3, 5) == 1  &&  a.robotCount() == oldCount-1)  || (a.nRobotsAt(3, 5) == 2  &&  a.robotCount() == oldCount));
             a.damageRobotAt(3, 5);
             assert(a.nRobotsAt(3, 5) == 1  &&  a.robotCount() == oldCount-1);
             a.damageRobotAt(3, 5);
             assert(a.nRobotsAt(3, 5) == 0  &&  a.robotCount() == oldCount-2);
-        } break; case 19: {
+        } break;
+        case 19: {
             Arena a(10, 20);
             a.addPlayer(3, 9);
             a.addRobot(3, 15);  //  too far
@@ -272,13 +267,12 @@ void testone(int n)
             randReturn = 1;  // shooting hits
             a.player()->shoot(RIGHT);
             a.player()->shoot(RIGHT);
-            assert(a.nRobotsAt(3, 15) == 1  &&  a.nRobotsAt(7, 9) == 1  &&
-                   a.robotCount() == oldCount);
+            assert(a.nRobotsAt(3, 15) == 1  &&  a.nRobotsAt(7, 9) == 1  && a.robotCount() == oldCount);
             a.player()->shoot(DOWN);
             a.player()->shoot(DOWN);
-            assert(a.nRobotsAt(3, 15) == 1  &&  a.nRobotsAt(7, 9) == 0  &&
-                   a.robotCount() == oldCount-1);
-        } break; case 20: {
+            assert(a.nRobotsAt(3, 15) == 1  &&  a.nRobotsAt(7, 9) == 0  && a.robotCount() == oldCount-1);
+        } break;
+        case 20: {
             Arena a(10, 20);
             a.addPlayer(3, 9);
             a.addRobot(3, 5);
@@ -293,7 +287,8 @@ void testone(int n)
             for (int c = 3; c <= 6; c++)
                 assert(a.nRobotsAt(3, c) == 1);
             assert(a.nRobotsAt(3, 7) == 0  &&  a.robotCount() == oldCount-1);
-        } break; case 21: {
+        } break;
+        case 21: {
             Arena a(10, 20);
             a.addPlayer(5, 9);
             a.addRobot(3, 9);
@@ -306,7 +301,8 @@ void testone(int n)
             assert(a.nRobotsAt(3, 9) == 1  &&  a.robotCount() == oldCount-1);
             a.player()->shoot(UP);
             assert(a.nRobotsAt(3, 9) == 0  &&  a.robotCount() == oldCount-2);
-        } break; case 22: {
+        } break;
+        case 22: {
             Arena a(10, 20);
             a.addPlayer(4, 6);
             a.addRobot(3, 3);
@@ -315,32 +311,29 @@ void testone(int n)
             int oldCount = a.robotCount();
             randReturn = 1;  // shooting would hit if there were a robot
             a.player()->shoot(LEFT);
-            assert(a.nRobotsAt(3, 5) == 2  &&  a.nRobotsAt(3, 3) == 1  &&
-                   a.robotCount() == oldCount);
-        } break; case 23: {
+            assert(a.nRobotsAt(3, 5) == 2  &&  a.nRobotsAt(3, 3) == 1  && a.robotCount() == oldCount);
+        } break;
+        case 23: {
             Arena a(10, 20);
             a.addPlayer(6, 15);
             for (int r = 1; r <= 10; r++)
                 for (int c = 1; c <= 13; c++)
                     assert(a.addRobot(r, c));
             assert(!a.addRobot(5, 15));
-        } break; case 24: {
+        } break;
+        case 24: {
             Arena a(10, 20);
             a.addPlayer(6, 6);
             a.addRobot(4, 6);
             a.addRobot(5, 8);
             a.moveRobots();
-            assert(a.nRobotsAt(4, 6) == 0  &&
-                   (a.nRobotsAt(3, 6) + a.nRobotsAt(5, 6) +
-                    a.nRobotsAt(4, 5) + a.nRobotsAt(4, 7)) == 1);
-            assert(a.nRobotsAt(5, 8) == 0  &&
-                   (a.nRobotsAt(4, 8) + a.nRobotsAt(6, 8) +
-                    a.nRobotsAt(5, 7) + a.nRobotsAt(5, 9)) == 1);
-        } break; case 25: {
+            assert(a.nRobotsAt(4, 6) == 0  && (a.nRobotsAt(3, 6) + a.nRobotsAt(5, 6) + a.nRobotsAt(4, 5) + a.nRobotsAt(4, 7)) == 1);
+            assert(a.nRobotsAt(5, 8) == 0  && (a.nRobotsAt(4, 8) + a.nRobotsAt(6, 8) + a.nRobotsAt(5, 7) + a.nRobotsAt(5, 9)) == 1);
+        } break;
+        case 25: {
             Arena a(10, 20);
             a.addPlayer(7, 7);
-            for (int k = 0; k < MAXROBOTS/4; k++)
-            {
+            for (int k = 0; k < MAXROBOTS/4; k++) {
                 a.addRobot(6, 7);
                 a.addRobot(8, 7);
                 a.addRobot(7, 6);
@@ -349,7 +342,8 @@ void testone(int n)
             assert( ! a.player()->isDead());
             a.moveRobots();
             assert(a.player()->isDead());
-        } break; case 26: {
+        } break;
+        case 26: {
             Arena a(1, 3);
             a.addPlayer(1, 1);
             Player* p = a.player();
@@ -358,19 +352,17 @@ void testone(int n)
             assert(!p->isDead());
             a.moveRobots();
             int k;
-            for (k = 0; k < 100; k++)
-            {
+            for (k = 0; k < 100; k++) {
                 assert(!p->isDead());
                 bool b = a.moveRobots();
-                if (!b || a.nRobotsAt(1, 1) > 0 || p->isDead())
-                {
-                    assert(!b && a.nRobotsAt(1, 1) > 0 &&
-                           p->isDead());
+                if (!b || a.nRobotsAt(1, 1) > 0 || p->isDead()) {
+                    assert(!b && a.nRobotsAt(1, 1) > 0 && p->isDead());
                     break;
                 }
             }
             assert(k < 100);
-        } break; case 27: {
+        } break;
+        case 27: {
             ostringstream oss;
             streambuf_switcher sso2(cout, oss);
             Arena a(2, 3);
@@ -381,7 +373,8 @@ void testone(int n)
             string s = oss.str();
             assert(s.find(".@R") != string::npos);
             assert(s.find(".R.") != string::npos);
-        } break; case 28: {
+        } break;
+        case 28: {
             ostringstream oss;
             streambuf_switcher sso2(cout, oss);
             Arena a(2, 3);
@@ -392,7 +385,8 @@ void testone(int n)
             a.display("");
             string s = oss.str();
             assert(s.find(".@8") != string::npos);
-        } break; case 29: {
+        } break;
+        case 29: {
             ostringstream oss;
             streambuf_switcher sbs(cout, oss);
             Arena a(2, 3);
@@ -403,7 +397,8 @@ void testone(int n)
             a.display("");
             string s = oss.str();
             assert(s.find(".@9") != string::npos);
-        } break; case 30: {
+        } break;
+        case 30: {
             recordaddrs = true;
             int oldn = (int)addrs.size();
             {
@@ -418,7 +413,8 @@ void testone(int n)
             }
             assert(addrs.size() == oldn);
             recordaddrs = false;
-        } break; case 31: {
+        } break;
+        case 31: {
             Arena a(1, 40);
             a.addPlayer(1, 2);
             recordaddrs = true;
@@ -429,54 +425,48 @@ void testone(int n)
             a.damageRobotAt(1, 5);
             assert(addrs.size() == oldn);
             recordaddrs = false;
-        } break; case 32: {
+        } break;
+        case 32: {
             Arena a(1, 40);
             a.addPlayer(1, 2);
-            for (int k = 0; k < 25; k++)
-            {
+            for (int k = 0; k < 25; k++) {
                 a.addRobot(1, 1);
-                a.addRobot(1, 3);
-            }
+                a.addRobot(1, 3); }
             a.addRobot(1, 40);
-            for (int k = 0; k < 25; k++)
-            {
+            for (int k = 0; k < 25; k++) {
                 a.addRobot(1, 1);
                 a.addRobot(1, 3);
             }
             assert(a.robotCount() == 101);
-            for (int k = 0; k < 50; k++)
-            {
+            for (int k = 0; k < 50; k++) {
                 a.damageRobotAt(1, 1);
                 a.damageRobotAt(1, 1);
                 a.damageRobotAt(1, 3);
                 a.damageRobotAt(1, 3);
             }
-            assert(a.robotCount() == 1  &&  a.nRobotsAt(1, 40) == 1  &&
-                   a.nRobotsAt(1, 1) == 0  &&  a.nRobotsAt(1, 3) == 0);
+            assert(a.robotCount() == 1  &&  a.nRobotsAt(1, 40) == 1  && a.nRobotsAt(1, 1) == 0  &&  a.nRobotsAt(1, 3) == 0);
             Player* p = a.player();
             assert(!p->isDead());
-            for (int k = 0; k < 10; k++)
-            {
+            for (int k = 0; k < 10; k++) {
                 a.moveRobots();
                 assert(!p->isDead());
-                for (int c = 1; c <= 4; c++)
-                {
+                for (int c = 1; c <= 4; c++) {
                     a.damageRobotAt(1, c);
                     assert(a.nRobotsAt(1, c) == 0);
                 }
             }
-        } break; case 33: {
+        } break;
+        case 33: {
             Arena a(10, 2);
             a.addPlayer(1, 1);
             a.addRobot(10, 2);
-            for (int k = 0; k < 10000 &&  ! a.player()->isDead()  &&
-                 a.robotCount() != 0; k++)
-            {
+            for (int k = 0; k < 10000 &&  ! a.player()->isDead()  && a.robotCount() != 0; k++) {
                 a.player()->takeComputerChosenTurn();
                 a.moveRobots();
             }
             assert(! a.player()->isDead()  &&  a.robotCount() == 0);
-        } break; case 34: {
+        } break;
+        case 34: {
             Arena a(10, 10);
             a.addPlayer(6, 6);
             a.addRobot(4, 6);
@@ -489,7 +479,8 @@ void testone(int n)
             a.addRobot(5, 5);
             a.player()->takeComputerChosenTurn();
             assert(a.player()->row() == 6  &&  a.player()->col() == 6);
-        } break; case 35: {
+        } break;
+        case 35: {
             Arena a(10, 10);
             a.addPlayer(6, 6);
             assert(a.player()->row() == 6  &&  a.player()->col() == 6);
@@ -503,8 +494,7 @@ void testone(int n)
     }
 }
 
-int main()
-{
+int main() {
     cout << "Enter test number: ";
     int n;
     cin >> n;
