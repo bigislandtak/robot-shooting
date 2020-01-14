@@ -54,7 +54,7 @@ void clearScreen() { // will just write a newline in an Xcode output window
     if (term == nullptr  ||  strcmp(term, "dumb") == 0)
         cout << endl;
     else {
-        static const char* ESC_SEQ = "\x1B[";  // ANSI Terminal esc seq:  ESC [
+        static const char* ESC_SEQ = "\x1B[";  // ANSI Terminal esc seq: ESC
         cout << ESC_SEQ << "2J" << ESC_SEQ << "H" << flush;
     }
 }
