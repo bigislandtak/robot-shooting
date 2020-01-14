@@ -21,7 +21,7 @@ public:
     bool takeDamageAndLive();
     
     // Add function to change damaged statas.
-    //void takeDamage();
+    void takeDamage();
     
 private:
     Arena* m_arena;
