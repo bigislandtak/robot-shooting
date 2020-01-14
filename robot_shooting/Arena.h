@@ -7,8 +7,7 @@
 class Player;
 class Robot;
 
-class Arena
-{
+class Arena {
 public:
     // Constructor/destructor
     Arena(int nRows, int nCols);
