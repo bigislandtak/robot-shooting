@@ -5,9 +5,6 @@
 //  Game implementations
 ///////////////////////////////////////////////////////////////////////////
 
-// To create a Game, you specify a number of rows and columns and the number of robots to start with. The Game object creates an appropriately sized Arena and populates it with the Player and the Robots.
-// A game may be played.
-
 Game::Game(int rows, int cols, int nRobots) {
     if (nRobots > MAXROBOTS) {
         cout << "***** Trying to create Game with " << nRobots
@@ -21,7 +18,6 @@ Game::Game(int rows, int cols, int nRobots) {
     // Add player
     int rPlayer = 1 + TESTrand() % rows;
     int cPlayer = 1 + TESTrand() % cols;
-    //cout << "Adding player" << endl;
     m_arena->addPlayer(rPlayer, cPlayer);
     
     // Populate with robots
